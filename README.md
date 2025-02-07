@@ -52,9 +52,9 @@ function unpause() public onlyRole(PAUSER_ROLE){
 }
 ```
 
-## Extra function
+## Extra functions
 
-There's a function that is not in the contract that may be useful and similar to the role of admin. If we wanted to specify that a function/role can only be executed by the owner we can use *onlyOwner* this way:
+- There's a function that is not in the contract that may be useful and similar to the role of admin. If we wanted to specify that a function/role can only be executed by the owner we can use *onlyOwner* this way:
 ```solidity
 function mint(address account_, uint amount_) public onlyOwner {
     _mint(account_, 1000 * 1e18);
@@ -62,6 +62,13 @@ function mint(address account_, uint amount_) public onlyOwner {
 ```
 In this case we force the **"mint"** *function* only to be executed by the owner. 
 But first we would need to import: ```import "@openzeppelin/contracts/access/Ownable.sol";``` and say our contract is **"Ownable"**: ```contract MyContract is Ownable {}```
+
+- In the contract, we already have the **burn** *function*. In this case, the function allows *"msg.sender"* to burn its own tokens. But if we wanted to allow someone with the "BURNER_ROLE" to burn tokens from any account, we should have imported ERC20Burnable.sol and use a function like this:
+```solidity
+function burnFrom(address account_, uint256 amount_) public onlyRole(BURNER_ROLE) {
+    _burn(account_, amount_);
+}
+```
 ## 📚 Documentation
 
 [Documentation](https://docs.openzeppelin.com/contracts/3.x/access-control)
