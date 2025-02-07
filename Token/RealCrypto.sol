@@ -28,12 +28,11 @@ contract RealCrypto is ERC20, AccessControl, Pausable {
    
 
     function mint(address to_ , uint amount_) public  onlyRole(MINTER_ROLE){
-        require(hasRole(MINTER_ROLE, msg.sender), "Caller is not a minter");
         _mint(to_, amount_);
     }
 
-    function burn(address to_ , uint amount_) public onlyRole(BURNER_ROLE) {
-        _burn(to_, amount_);
+    function burn(uint amount_) public onlyRole(BURNER_ROLE) {
+        _burn(msg.sender, amount_);
     }
 
     function pause() public onlyRole(PAUSER_ROLE){
@@ -44,15 +43,8 @@ contract RealCrypto is ERC20, AccessControl, Pausable {
         _unpause();
     }
 
-    function balance(address account_) public view onlyRole(DEFAULT_ADMIN_ROLE){
-        account_ = msg.sender;
-        IERC20(msg.sender).balanceOf(address(this));
+    function balance(address account_) public view onlyRole(DEFAULT_ADMIN_ROLE) returns(uint){
+        return balanceOf(account_);
     }
-
-
-
-   
-    
-
 
 }
