@@ -30,15 +30,14 @@ All those roles need to be created first to be granted as we can see in the cons
 All the roles we have created in the previous step must fit in the functions needed now for certain acions.
 - **Mint** *function*: with this function we force the "mint" (add more tokens to a certain account) action to be done only by the minter role.
 ``` solidity
-function mint(address to_ , uint amount_) public onlyRole(MINTER_ROLE){
-    require(hasRole(MINTER_ROLE, msg.sender), "Caller is not a minter");
+function mint(address to_ , uint amount_) public  onlyRole(MINTER_ROLE){
     _mint(to_, amount_);
 }
 ```
 - **Burn** *function*: with this function we force the "burn" action (burn or "delete" some tokens) to be done only by the burner role:
 ``` solidity
-function burn(address to_ , uint amount_) public onlyRole(BURNER_ROLE) {
-    _burn(to_, amount_);
+function burn(uint amount_) public onlyRole(BURNER_ROLE) {
+    _burn(msg.sender, amount_);
 }
 ```
 - **Pause** and **Unapuse** *functions*: with these functions we force the "pause" and "unpause" actions (pause or resume the activity of the tokens) to be done only by the pauser role:
@@ -63,7 +62,7 @@ function mint(address account_, uint amount_) public onlyOwner {
 In this case we force the **"mint"** *function* only to be executed by the owner. 
 But first we would need to import: ```import "@openzeppelin/contracts/access/Ownable.sol";``` and say our contract is **"Ownable"**: ```contract MyContract is Ownable {}```
 
-- In the contract, we already have the **burn** *function*. In this case, the function allows *"msg.sender"* to burn its own tokens. But if we wanted to allow someone with the "BURNER_ROLE" to burn tokens from any account, we should have imported ERC20Burnable.sol and use a function like this:
+- In the contract, we already have the **burn** *function*. In this case, the function allows *"msg.sender"* to burn its own tokens. But if we wanted to allow someone with the "BURNER_ROLE" to burn tokens from any account, we should have imported ***ERC20Burnable.sol*** and use a function like this:
 ```solidity
 function burnFrom(address account_, uint256 amount_) public onlyRole(BURNER_ROLE) {
     _burn(account_, amount_);
