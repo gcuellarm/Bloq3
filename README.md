@@ -28,10 +28,11 @@ All those roles need to be created first to be granted as we can see in the cons
 
 ### ⚙️ Functions
 All the roles we have created in the previous step must fit in the functions needed now for certain acions.
-- **Mint** *function*: with this function we force the "mint" (add more tokens to a certain account) action to be done only by the minter role.
+- **Mint** *function*: with this function we force the "mint" (add more tokens to a certain account) action to be done only by the minter role (and admin).
 ``` solidity
 function mint(address to_ , uint amount_) public  onlyRole(MINTER_ROLE){
-    _mint(to_, amount_);
+        require(hasRole(MINTER_ROLE, msg.sender) || hasRole(DEFAULT_ADMIN_ROLE, msg.sender), "Caller is not a minter");
+        _mint(to_, amount_);
 }
 ```
 - **Burn** *function*: with this function we force the "burn" action (burn or "delete" some tokens) to be done only by the burner role:
@@ -48,6 +49,18 @@ function pause() public onlyRole(PAUSER_ROLE){
 
 function unpause() public onlyRole(PAUSER_ROLE){
     _unpause();
+}
+```
+- **Balance** *function*: this function is used to check the balance of the account:
+```solidity
+function balance(address account_) public view onlyRole(DEFAULT_ADMIN_ROLE) returns(uint256){
+        return balanceOf(account_);
+}
+```
+- **ApproveAmount** *function*: with this function we can set the amount available for an account to transfer to another account or whatever action needed:
+```solidity
+function approveAmount(address to_, uint amount_) public onlyRole(DEFAULT_ADMIN_ROLE) returns(bool){
+        return approve(to_, amount_);
 }
 ```
 
